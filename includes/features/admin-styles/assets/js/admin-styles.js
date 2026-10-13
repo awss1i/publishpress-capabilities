@@ -39,20 +39,24 @@
       return null;
     }
 
-    // If URL API is available, ensure protocol is http/https or relative.
+    // Parse and normalize URL; only allow http/https.
     try {
-      if (typeof URL === 'function') {
-        var parsed = new URL(trimmed, window.location.origin);
-        var protocol = parsed.protocol.toLowerCase();
-        if (protocol !== 'http:' && protocol !== 'https:') {
-          return null;
-        }
+      if (typeof URL !== 'function') {
+        return null;
       }
-    } catch (e) {
-      // If parsing fails, fall back to basic checks and continue.
-    }
 
-    return trimmed;
+      var parsed = new URL(trimmed, window.location.origin);
+      var protocol = parsed.protocol.toLowerCase();
+      if (protocol !== 'http:' && protocol !== 'https:') {
+        return null;
+      }
+
+      // Return canonical URL string instead of raw DOM text.
+      return parsed.href;
+    } catch (e) {
+      // Fail closed when parsing fails.
+      return null;
+    }
   }
 
   var PP_Admin_Styles = {
