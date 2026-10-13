@@ -129,6 +129,12 @@ add_action('plugins_loaded', function () {
 
 	require_once(dirname(__FILE__) . '/includes/functions.php');
 
+	if (defined('WP_CLI') && WP_CLI) {
+		require_once __DIR__ . '/includes/functions-admin.php';
+		require_once __DIR__ . '/includes/recovery.php';
+		require_once __DIR__ . '/includes/cli-recovery.php';
+	}
+
 	// ============================================ START PROCEDURE ==========
 
 
