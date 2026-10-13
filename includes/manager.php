@@ -1630,20 +1630,6 @@ class CapabilityManager
             $can_capture_current_user = $default_role === 'administrator'
                 && in_array($default_role, wp_get_current_user()->roles, true);
             $role_has_user = !empty($role_user) || $can_capture_current_user;
-            if (!$role_has_user) {
-                $profile_capture_error = __('There are no users in this role on this site. Add a user to this role, then find profile items again.', 'capability-manager-enhanced');
-                return;
-            }
-
-            if (!empty($role_user)
-                && (!pp_capabilities_feature_enabled('user-testing')
-                    || !class_exists('PP_Capabilities_Test_User')
-                    || !user_can($role_user[0]->ID, 'read')
-                    || !PP_Capabilities_Test_User::canTestUser($role_user[0]))
-            ) {
-                $profile_capture_error = __('Profile items could not be detected because User Testing is disabled, you cannot test the user in this role, or the user cannot access the Profile screen.', 'capability-manager-enhanced');
-                return;
-            }
 
 			// Check if role is enabled for profile features editing
 			if (!\PublishPress\Capabilities\PP_Capabilities_Profile_Features::isRoleEnabledForProfileFeatures($default_role)) {
@@ -1661,6 +1647,21 @@ class CapabilityManager
             }
 
             if (!get_option('cme_profile_features_auto_redirect') && !$role_refresh) {
+                return;
+            }
+
+            if (!$role_has_user) {
+                $profile_capture_error = __('There are no users in this role on this site. Add a user to this role, then find profile items again.', 'capability-manager-enhanced');
+                return;
+            }
+
+            if (!empty($role_user)
+                && (!pp_capabilities_feature_enabled('user-testing')
+                    || !class_exists('PP_Capabilities_Test_User')
+                    || !user_can($role_user[0]->ID, 'read')
+                    || !PP_Capabilities_Test_User::canTestUser($role_user[0]))
+            ) {
+                $profile_capture_error = __('Profile items could not be detected because User Testing is disabled, you cannot test the user in this role, or the user cannot access the Profile screen.', 'capability-manager-enhanced');
                 return;
             }
 

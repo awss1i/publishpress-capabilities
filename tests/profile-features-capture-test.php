@@ -102,5 +102,14 @@ namespace {
     if (empty($profile_capture_error) || isset($options['capsman_profile_features_elements_testing_role'])) {
         throw new RuntimeException('Disabled User Testing must show a warning without starting capture.');
     }
-    echo "Profile Features capture regression checks passed (7 eligibility scenarios and repeat visits).\n";
+    $_REQUEST = ['page' => 'pp-capabilities-profile-features', 'role' => 'subscriber'];
+    foreach ([[], [$user]] as $users) {
+        foreach ([[], ['cme_profile_features_auto_redirect' => 1, 'capsman_profile_features_updated' => ['subscriber' => 1]]] as $options) {
+            $controller->profileFeaturesCaptureRedirect();
+            if (!empty($profile_capture_error)) {
+                throw new RuntimeException('A visit that does not start capture must not show a warning.');
+            }
+        }
+    }
+    echo "Profile Features capture regression checks passed (7 eligibility scenarios, repeat visits and plain visits).\n";
 }
