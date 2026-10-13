@@ -242,6 +242,21 @@ If you really need to clean up and refresh your site, PublishPress Capabilities 
 
 If you want to proceed, click the “Reset to WordPress defaults” link. PublishPress Capabilities will ask you if you're really sure you want to do this. Click “OK” to continue. Once the process is complete, you'll see the message, “Roles and Capabilities reset to WordPress defaults”.
 
+= How can I recover if I cannot access wp-admin? =
+
+With PublishPress Capabilities active, run these commands through your host's WP-CLI terminal. No WordPress admin login is required:
+
+    wp capabilities backup list
+    wp capabilities backup restore --last
+    wp capabilities backup restore --id=capsman_backup_initial
+    wp capabilities reset-roles
+
+Use an ID returned by the list command. Restore and reset ask for confirmation; add --yes to skip it. On multisite, add --url=https://example.com/subsite/ to select a site. Each command affects only that site.
+
+--last selects the newest manual, automatic or initial backup by its recorded date. Manual backups restore roles and backed-up feature settings, just like the admin Restore tool. Automatic and initial backups restore roles only. Reset removes custom roles and capabilities, just like Reset Roles in wp-admin; use it as a last resort. These commands do not change users' role assignments.
+
+Recovery writes the action and site ID to the PHP error log (wp-content/debug.log when configured with WP_DEBUG_LOG) and stores the latest result in the site's capsman_last_recovery option. Keep the plugin active while recovering; --skip-plugins skips its commands too.
+
 = What happens to my roles if I deactivate or delete the plugin? =
 
 Nothing changes back. WordPress keeps roles and capabilities in its own database option, and PublishPress Capabilities edits that option directly rather than storing a separate copy of your settings. Whatever your roles looked like when you removed the plugin is what they stay &#8212; removing it is not a way to undo a change.
