@@ -13,6 +13,7 @@ class PP_Capabilities_Installer
     {
         self::addPluginCapabilities();
         self::addAdminNoticesCapabilities();
+        self::addAdminMenusCapabilities();
 
         /**
          * @param string $currentVersion
@@ -52,6 +53,7 @@ class PP_Capabilities_Installer
         }
 
         if (version_compare($currentVersions, '2.53.0', '<')) {
+            self::addAdminMenusCapabilities();
             self::migrateAdminStylesTemplateColors();
         }
 
@@ -205,6 +207,19 @@ class PP_Capabilities_Installer
             if (is_object($role) && !$role->has_cap('manage_capabilities_admin_styles')) {
                 $role->add_cap('manage_capabilities_admin_styles');
             }
+        }
+    }
+
+    /**
+     * Grant administrators access when Admin Menus becomes available in Free.
+     *
+     * @since 2.53.0
+     */
+    private static function addAdminMenusCapabilities()
+    {
+        $role = get_role('administrator');
+        if (is_object($role) && !$role->has_cap('manage_capabilities_admin_menus')) {
+            $role->add_cap('manage_capabilities_admin_menus');
         }
     }
 

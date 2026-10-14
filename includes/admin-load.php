@@ -30,6 +30,10 @@ class PP_Capabilities_Admin_UI {
         add_action('init', [$this, 'featureRestrictionsGutenberg'], PHP_INT_MAX - 1);
 
         if (is_admin()) {
+            require_once __DIR__ . '/features/admin-menus/admin-menus-filters.php';
+            \PublishPress\Capabilities\AdminMenusController::instance();
+            add_action('pp_capabilities_after_role_copied', 'pp_capabilities_admin_menus_after_role_copied', 10, 2);
+
             // Redirect on plugin activation
             add_action('admin_init', [$this, 'redirect_on_activate'], 2000);
 
